@@ -70,15 +70,48 @@ export const getImageUrl = (imagePath) => {
   return `${baseUrl}${path}`;
 };
 
+// Función helper para obtener el token CSRF de las cookies
+const getCsrfToken = () => {
+  // Intentar obtener de las cookies usando js-cookie
+  if (typeof document !== "undefined") {
+    // Buscar en document.cookie directamente
+    const cookies = document.cookie.split(";");
+    for (let cookie of cookies) {
+      const [name, value] = cookie.trim().split("=");
+      if (name === "csrftoken") {
+        return value;
+      }
+    }
+  }
+  return null;
+};
+
 // Configuración de fetch con credenciales para sesiones
 export const fetchWithCredentials = (url, options = {}) => {
+  // Determinar si es una petición que requiere CSRF (POST, PUT, DELETE, PATCH)
+  const method = options.method || "GET";
+  const needsCsrf = ["POST", "PUT", "DELETE", "PATCH"].includes(
+    method.toUpperCase()
+  );
+
+  // Obtener el token CSRF si es necesario
+  const csrfToken = needsCsrf ? getCsrfToken() : null;
+
+  // Construir headers
+  const headers = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
+
+  // Agregar el token CSRF al header si está disponible
+  if (csrfToken) {
+    headers["X-CSRFToken"] = csrfToken;
+  }
+
   return fetch(url, {
     ...options,
-    credentials: "include", // CRUCIAL para sesiones
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
+    credentials: "include", // CRUCIAL para sesiones y cookies
+    headers,
   });
 };
 
