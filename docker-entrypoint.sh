@@ -4,8 +4,8 @@
 # Crear archivo de configuración JavaScript con las variables de entorno
 cat > /usr/share/nginx/html/env-config.js <<EOF
 window._env_ = {
-  REACT_APP_API_URL: "${REACT_APP_API_URL:-https://casacondimentos.com/api}",
-  REACT_APP_MEDIA_URL: "${REACT_APP_MEDIA_URL:-https://casacondimentos.com}",
+  REACT_APP_API_URL: "${REACT_APP_API_URL:-https://api.casacondimentos.com/api}",
+  REACT_APP_MEDIA_URL: "${REACT_APP_MEDIA_URL:-https://api.casacondimentos.com/api}",
   NODE_ENV: "${NODE_ENV:-production}"
 };
 EOF

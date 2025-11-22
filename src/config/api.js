@@ -24,8 +24,8 @@ const getApiBaseUrl = () => {
   if (process.env.NODE_ENV === "development") {
     return "http://127.0.0.1:8000/api";
   }
-  // En producción sin variable, usar dominio por defecto
-  return "https://casacondimentos.com/api";
+  // En producción sin variable, usar dominio de API por defecto
+  return "https://api.casacondimentos.com/api";
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -45,7 +45,8 @@ const getMediaBaseUrl = () => {
   if (process.env.NODE_ENV === "development") {
     return "http://127.0.0.1:8000";
   }
-  return "https://casacondimentos.com";
+  // En producción, usar el mismo subdominio de la API para medios
+  return "https://api.casacondimentos.com";
 };
 
 const MEDIA_BASE_URL = getMediaBaseUrl();

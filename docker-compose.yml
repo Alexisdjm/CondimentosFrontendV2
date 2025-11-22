@@ -16,6 +16,6 @@ services:
     environment:
       # Variables de entorno en tiempo de ejecución
       # Estas se inyectan dinámicamente en el contenedor
-      - REACT_APP_API_URL=${REACT_APP_API_URL:-https://casacondimentos.com/api}
-      - REACT_APP_MEDIA_URL=${REACT_APP_MEDIA_URL:-https://casacondimentos.com}
+      - REACT_APP_API_URL=${REACT_APP_API_URL:-https://api.casacondimentos.com/api}
+      - REACT_APP_MEDIA_URL=${REACT_APP_MEDIA_URL:-https://api.casacondimentos.com/api}
       - NODE_ENV=production

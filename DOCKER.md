@@ -9,25 +9,28 @@ El proyecto utiliza variables de entorno para configurar las URLs de la API y lo
 ### Variables Disponibles
 
 - `REACT_APP_API_URL`: URL base de la API backend
+
   - Desarrollo: `http://127.0.0.1:8000/api`
-  - Producción: `https://casacondimentos.com/api`
+  - Producción: `https://api.casacondimentos.com/api`
 
 - `REACT_APP_MEDIA_URL`: URL base para medios/imágenes (opcional)
   - Si no se define, se usa la misma base que la API pero sin `/api`
   - Desarrollo: `http://127.0.0.1:8000`
-  - Producción: `https://casacondimentos.com`
+  - Producción: `https://api.casacondimentos.com/api`
 
 ## Desarrollo Local
 
 ### Con Docker Compose (Recomendado)
 
 1. Crea un archivo `.env` en la raíz del proyecto:
+
 ```env
 REACT_APP_API_URL=http://127.0.0.1:8000/api
 REACT_APP_MEDIA_URL=http://127.0.0.1:8000
 ```
 
 2. Construye y ejecuta:
+
 ```bash
 docker-compose up --build
 ```
@@ -37,12 +40,14 @@ docker-compose up --build
 ### Sin Docker (Desarrollo tradicional)
 
 1. Crea un archivo `.env` en la raíz:
+
 ```env
 REACT_APP_API_URL=http://127.0.0.1:8000/api
 REACT_APP_MEDIA_URL=http://127.0.0.1:8000
 ```
 
 2. Instala dependencias y ejecuta:
+
 ```bash
 npm install
 npm start
@@ -61,8 +66,8 @@ docker build -t condimentos-frontend .
 ```bash
 docker run -d \
   -p 3000:80 \
-  -e REACT_APP_API_URL=https://casacondimentos.com/api \
-  -e REACT_APP_MEDIA_URL=https://casacondimentos.com \
+  -e REACT_APP_API_URL=https://api.casacondimentos.com/api \
+  -e REACT_APP_MEDIA_URL=https://api.casacondimentos.com/api \
   --name condimentos-frontend \
   condimentos-frontend
 ```
@@ -70,12 +75,14 @@ docker run -d \
 ### Con Docker Compose
 
 1. Crea un archivo `.env` o usa variables de entorno del sistema:
+
 ```env
-REACT_APP_API_URL=https://casacondimentos.com/api
-REACT_APP_MEDIA_URL=https://casacondimentos.com
+REACT_APP_API_URL=https://api.casacondimentos.com/api
+REACT_APP_MEDIA_URL=https://api.casacondimentos.com/api
 ```
 
 2. Ejecuta:
+
 ```bash
 docker-compose up -d
 ```
@@ -97,22 +104,26 @@ docker-compose up -d
 
 3. **Fallbacks**: Si no se definen variables de entorno:
    - En desarrollo: usa `http://127.0.0.1:8000` por defecto
-   - En producción: usa `https://casacondimentos.com` por defecto
+   - En producción: usa `https://api.casacondimentos.com/api` por defecto (mismo subdominio de la API)
 
 ## Despliegue en Servicios Cloud
 
 ### AWS ECS / Fargate
+
 - Configura las variables de entorno en la definición de la tarea
 - Sube la imagen a ECR
 
 ### Google Cloud Run
+
 - Configura las variables de entorno en el servicio
 - Sube la imagen a Container Registry o Artifact Registry
 
 ### Azure Container Instances
+
 - Pasa las variables de entorno al crear la instancia
 - Sube la imagen a Azure Container Registry
 
 ### Heroku / Railway / Render
+
 - Configura las variables de entorno en el panel de control
 - Conecta el repositorio para despliegue automático
