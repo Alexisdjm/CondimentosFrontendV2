@@ -2,6 +2,7 @@ import { useFormatQuantity, useCartActions } from "../hooks";
 import { useCart } from "../context/CartContext";
 import { Toaster } from "sonner";
 import { ImageWithSkeleton } from "./index.js";
+import { getImageUrl } from "../config/api";
 
 const CartContent = () => {
   const { cart, totalItems, loading, error, hasItems } = useCart();
@@ -123,7 +124,7 @@ const CartContent = () => {
 
                         <ImageWithSkeleton
                           className="cart-item-img"
-                          src={"http://127.0.0.1:8000/" + product.image}
+                          src={getImageUrl(product.image)}
                           alt={`Imagen del producto ${product.name}`}
                           itemProp="image"
                         />
@@ -216,7 +217,6 @@ const CartContent = () => {
                   aria-live="polite"
                   aria-atomic="true"
                 >
-
                   <span
                     aria-label={`Total de productos: ${totalItems} producto${
                       totalItems !== 1 ? "s" : ""

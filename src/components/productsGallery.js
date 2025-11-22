@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ImageWithSkeleton } from "./index.js";
+import { getImageUrl } from "../config/api";
 
 const ProductsContainer = ({ elements, loading, error, isLoadingMore }) => {
   return (
@@ -46,7 +47,7 @@ const ProductsContainer = ({ elements, loading, error, isLoadingMore }) => {
                         <div className="product-image-container">
                           <ImageWithSkeleton
                             className="product-img"
-                            src={product.image}
+                            src={getImageUrl(product.image)}
                             alt={`Imagen del producto ${product.name}`}
                           />
                           <div className="product-inner-text">

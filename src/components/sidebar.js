@@ -3,6 +3,7 @@ import images from "../images/exporting.js";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ImageWithSkeleton } from "./index.js";
+import { API_ENDPOINTS, getImageUrl } from "../config/api";
 
 const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
   const [inputValue, setInputValue] = useState("");
@@ -15,7 +16,7 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    fetch(`https://casacondimentos.com/api/consulta/?search=${inputValue}`)
+    fetch(API_ENDPOINTS.searchProducts(inputValue))
       .then((response) => response.json())
       .then((data) => {
         setResults(data);
@@ -86,9 +87,7 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
               aria-label="Resultados de búsqueda"
             >
               {results.length > 0 ? (
-                <ul
-                  style={{ listStyle: "none", padding: 0, margin: 0 }}
-                >
+                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                   {results.map((result) => {
                     return (
                       <li key={result.id}>
@@ -101,7 +100,7 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
                             <div className="search-result-img-container">
                               <ImageWithSkeleton
                                 className="search-img"
-                                src={result.image}
+                                src={getImageUrl(result.image)}
                                 alt={result.name}
                               />
                             </div>

@@ -4,6 +4,7 @@ import "react-multi-carousel/lib/styles.css";
 import { Link } from "react-router-dom";
 import useFeaturedProducts from "../hooks/useFeaturedProducts";
 import { ImageWithSkeleton } from "./index.js";
+import { getImageUrl } from "../config/api";
 
 const Featured = ({ css }) => {
   const { products, loading, error } = useFeaturedProducts();
@@ -74,7 +75,11 @@ const Featured = ({ css }) => {
           <h1 className="featured-title">Productos Destacados</h1>
           <img src={images.underline} alt="" aria-hidden="true"></img>
         </div>
-        <div className="slider-container" role="region" aria-label="Carrusel de productos destacados">
+        <div
+          className="slider-container"
+          role="region"
+          aria-label="Carrusel de productos destacados"
+        >
           {products && products.length > 0 ? (
             <Carousel
               responsive={responsive}
@@ -96,7 +101,7 @@ const Featured = ({ css }) => {
                     <div className="product-image-container">
                       <ImageWithSkeleton
                         className="product-img"
-                        src={product.image}
+                        src={getImageUrl(product.image)}
                         alt={`Imagen del producto ${product.name}`}
                       />
                       <div className="flex-col product-inner-text">

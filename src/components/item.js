@@ -8,6 +8,7 @@ import {
   useAddToCart,
 } from "../hooks";
 import { BuyButton } from "./index";
+import { getImageUrl } from "../config/api";
 
 const Item = () => {
   const { product, loading, error } = useProductData();
@@ -84,7 +85,7 @@ const Item = () => {
         <div className="single-product-page">
           <div className="single-product-img flex-col center align-center">
             <img
-              src={product?.image}
+              src={getImageUrl(product?.image)}
               alt={`Imagen del producto ${product?.name}`}
               itemProp="image"
             ></img>
