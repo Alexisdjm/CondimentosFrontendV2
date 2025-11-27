@@ -16,14 +16,30 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+
     fetch(API_ENDPOINTS.searchProducts(inputValue))
-      .then((response) => response.json())
+      .then((response) => {
+        // Logs de debugging para verificar el código de estado de la búsqueda
+        console.log("[SEARCH DEBUG] Respuesta de búsqueda", {
+          url: response.url,
+          status: response.status,
+          ok: response.ok,
+        });
+
+        if (response.status === 403) {
+          console.log("[SEARCH DEBUG] Se recibió un 403 al hacer la búsqueda", {
+            termino: inputValue,
+          });
+        }
+
+        return response.json();
+      })
       .then((data) => {
         setResults(data);
         setClear(false);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("[SEARCH DEBUG] Error en la búsqueda", error);
       });
   };
 
