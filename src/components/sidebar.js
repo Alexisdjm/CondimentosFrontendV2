@@ -35,6 +35,7 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
         return response.json();
       })
       .then((data) => {
+        console.log("data", data);
         setResults(data);
         setClear(false);
       })
