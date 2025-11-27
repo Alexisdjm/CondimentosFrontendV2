@@ -489,6 +489,17 @@ input.search-input::placeholder {
   transition: opacity 0.3s;
 }
 
+/* Prevenir cambio de background cuando el navegador aplica autocompletado */
+input.search-input:-webkit-autofill,
+input.search-input:-webkit-autofill:hover,
+input.search-input:-webkit-autofill:focus,
+input.search-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+  -webkit-text-fill-color: inherit !important;
+  background-color: var(--color-transparent) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 .search-form {
   gap: 20px;
   padding: 0 25px;
