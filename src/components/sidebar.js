@@ -70,6 +70,9 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
         </div>
         {kind === "search" ? (
           <>
+            <pre style={{ display: "none" }}>
+              {JSON.stringify(results, null, 2)}
+            </pre>
             <form
               className="search-form flex-center"
               onSubmit={handleSearch}
