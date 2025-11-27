@@ -141,7 +141,7 @@ export const API_ENDPOINTS = {
   // Consulta y búsqueda
   allProducts: () => `${API_BASE_URL}/consulta/?page=1`,
   searchProducts: (term) =>
-    `${API_BASE_URL}/consulta/?search=${encodeURIComponent(term)}`,
+    `${API_BASE_URL}/consulta/search/?q=${encodeURIComponent(term)}`,
 
   // Carrito
   cart: () => `${API_BASE_URL}/cart/`,
