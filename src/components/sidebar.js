@@ -35,8 +35,8 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
         return response.json();
       })
       .then((data) => {
-        console.log("data", data);
-        setResults(data);
+        console.log("data", data.products);
+        setResults(data.products);
         setClear(false);
       })
       .catch((error) => {
@@ -73,6 +73,12 @@ const Sidebar = ({ togg, func, kind, side, justmobile, id }) => {
             <pre style={{ display: "none" }}>
               {JSON.stringify(results, null, 2)}
             </pre>
+            <div style={{ display: "none" }}>
+              {results.length > 0 ? "true" : "false"}
+            </div>
+            <div style={{ display: "none" }}>
+              {results.map((result) => result.name)}
+            </div>
             <form
               className="search-form flex-center"
               onSubmit={handleSearch}
