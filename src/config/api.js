@@ -77,6 +77,8 @@ export const getImageUrl = (imagePath) => {
   const path = normalizedPath.startsWith("/")
     ? normalizedPath
     : `/${normalizedPath}`;
+
+  console.log(`${baseUrl}${path}`);
   return `${baseUrl}${path}`;
 };
 
