@@ -84,6 +84,7 @@ const Item = () => {
       >
         <div className="single-product-page">
           <div className="single-product-img flex-col center align-center">
+            <div style={{ display: "none" }}>{product?.image}</div>
             <img
               src={getImageUrl(product?.image)}
               alt={`Imagen del producto ${product?.name}`}
