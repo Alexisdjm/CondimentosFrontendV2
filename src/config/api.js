@@ -38,15 +38,26 @@ const getMediaBaseUrl = () => {
   }
   // Si no hay MEDIA_URL, usar la misma base que la API pero sin /api
   const apiUrl = getApiBaseUrl();
-  if (apiUrl.includes("/api")) {
-    return apiUrl.replace("/api", "");
+
+  // Eliminar /api de forma más robusta
+  // Manejar tanto /api al final como /api/ en medio
+  let mediaBase = apiUrl;
+  if (mediaBase.endsWith("/api/")) {
+    mediaBase = mediaBase.slice(0, -5); // Eliminar "/api/"
+  } else if (mediaBase.endsWith("/api")) {
+    mediaBase = mediaBase.slice(0, -4); // Eliminar "/api"
+  } else if (mediaBase.includes("/api/")) {
+    mediaBase = mediaBase.replace("/api/", "/");
+  } else if (mediaBase.includes("/api")) {
+    mediaBase = mediaBase.replace("/api", "");
   }
+
   // Fallback para desarrollo
   if (process.env.NODE_ENV === "development") {
-    return "http://127.0.0.1:8000";
+    return mediaBase || "http://127.0.0.1:8000";
   }
   // En producción, usar el mismo subdominio de la API para medios
-  return "https://api.casacondimentos.com";
+  return mediaBase || "https://api.casacondimentos.com";
 };
 
 const MEDIA_BASE_URL = getMediaBaseUrl();
@@ -63,22 +74,24 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
 
-  // Si la ruta contiene /api/, eliminarlo (por si acaso el backend lo incluye)
+  // Normalizar la ruta: eliminar /api/ si está presente
   let normalizedPath = imagePath;
-  if (normalizedPath.includes("/api/")) {
+  if (normalizedPath.startsWith("/api/")) {
+    normalizedPath = normalizedPath.replace("/api/", "/");
+  } else if (normalizedPath.includes("/api/")) {
     normalizedPath = normalizedPath.replace("/api/", "/");
   }
 
-  // Concatenar con MEDIA_BASE_URL
-  // Asegurarse de que no haya doble slash
+  // Obtener MEDIA_BASE_URL y asegurarse de que no termine en /
   const baseUrl = MEDIA_BASE_URL.endsWith("/")
     ? MEDIA_BASE_URL.slice(0, -1)
     : MEDIA_BASE_URL;
+
+  // Asegurarse de que el path comience con /
   const path = normalizedPath.startsWith("/")
     ? normalizedPath
     : `/${normalizedPath}`;
 
-  console.log(`${baseUrl}${path}`);
   return `${baseUrl}${path}`;
 };
 
