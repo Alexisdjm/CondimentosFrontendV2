@@ -54,6 +54,7 @@ const MEDIA_BASE_URL = getMediaBaseUrl();
 // Función helper para normalizar URLs de imágenes
 // Si la imagen ya es una URL completa, la devuelve tal cual
 // Si es una ruta relativa, la concatena con MEDIA_BASE_URL
+// Las imágenes del backend siempre vienen como /images/image.webp (sin /api/)
 export const getImageUrl = (imagePath) => {
   if (!imagePath) return "";
 
@@ -62,10 +63,9 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
 
-  // Si es una ruta relativa, normalizarla primero
-  // Eliminar /api/ si está presente al inicio de la ruta
+  // Si la ruta contiene /api/, eliminarlo (por si acaso el backend lo incluye)
   let normalizedPath = imagePath;
-  if (normalizedPath.startsWith("/api/")) {
+  if (normalizedPath.includes("/api/")) {
     normalizedPath = normalizedPath.replace("/api/", "/");
   }
 
