@@ -108,7 +108,6 @@ const CartContent = () => {
                       itemScope
                       itemType="https://schema.org/Product"
                     >
-                      <div style={{ display: "none" }}>{product.image}</div>
                       <div className="cart-item-align">
                         <label
                           className="container"

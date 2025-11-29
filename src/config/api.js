@@ -39,8 +39,6 @@ const getMediaBaseUrl = () => {
   // Si no hay MEDIA_URL, usar la misma base que la API pero sin /api
   const apiUrl = getApiBaseUrl();
 
-  // Eliminar /api de forma más robusta
-  // Manejar tanto /api al final como /api/ en medio
   let mediaBase = apiUrl;
 
   // Fallback para desarrollo
@@ -65,15 +63,11 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
 
-  let normalizedPath = imagePath;
-
   // Obtener MEDIA_BASE_URL y asegurarse de que no termine en /
   const baseUrl = MEDIA_BASE_URL.replace(/\/api\/?$/, "");
 
   // Asegurarse de que el path comience con /
-  const path = normalizedPath.startsWith("/")
-    ? normalizedPath
-    : `/${normalizedPath}`;
+  const path = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
 
   return `${baseUrl}${path}`;
 };
