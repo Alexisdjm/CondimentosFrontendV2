@@ -62,12 +62,21 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
 
-  // Si es una ruta relativa, concatenar con MEDIA_BASE_URL
+  // Si es una ruta relativa, normalizarla primero
+  // Eliminar /api/ si está presente al inicio de la ruta
+  let normalizedPath = imagePath;
+  if (normalizedPath.startsWith("/api/")) {
+    normalizedPath = normalizedPath.replace("/api/", "/");
+  }
+
+  // Concatenar con MEDIA_BASE_URL
   // Asegurarse de que no haya doble slash
   const baseUrl = MEDIA_BASE_URL.endsWith("/")
     ? MEDIA_BASE_URL.slice(0, -1)
     : MEDIA_BASE_URL;
-  const path = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
+  const path = normalizedPath.startsWith("/")
+    ? normalizedPath
+    : `/${normalizedPath}`;
   return `${baseUrl}${path}`;
 };
 
