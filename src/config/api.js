@@ -42,15 +42,6 @@ const getMediaBaseUrl = () => {
   // Eliminar /api de forma más robusta
   // Manejar tanto /api al final como /api/ en medio
   let mediaBase = apiUrl;
-  if (mediaBase.endsWith("/api/")) {
-    mediaBase = mediaBase.slice(0, -5); // Eliminar "/api/"
-  } else if (mediaBase.endsWith("/api")) {
-    mediaBase = mediaBase.slice(0, -4); // Eliminar "/api"
-  } else if (mediaBase.includes("/api/")) {
-    mediaBase = mediaBase.replace("/api/", "/");
-  } else if (mediaBase.includes("/api")) {
-    mediaBase = mediaBase.replace("/api", "");
-  }
 
   // Fallback para desarrollo
   if (process.env.NODE_ENV === "development") {
@@ -74,18 +65,10 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
 
-  // Normalizar la ruta: eliminar /api/ si está presente
   let normalizedPath = imagePath;
-  if (normalizedPath.startsWith("/api/")) {
-    normalizedPath = normalizedPath.replace("/api/", "/");
-  } else if (normalizedPath.includes("/api/")) {
-    normalizedPath = normalizedPath.replace("/api/", "/");
-  }
 
   // Obtener MEDIA_BASE_URL y asegurarse de que no termine en /
-  const baseUrl = MEDIA_BASE_URL.endsWith("/")
-    ? MEDIA_BASE_URL.slice(0, -1)
-    : MEDIA_BASE_URL;
+  const baseUrl = MEDIA_BASE_URL.replace(/\/api\/?$/, "");
 
   // Asegurarse de que el path comience con /
   const path = normalizedPath.startsWith("/")
