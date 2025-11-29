@@ -71,32 +71,63 @@ export const getImageUrl = (imagePath) => {
   return `${baseUrl}${path}`;
 };
 
-// Función helper para obtener el token CSRF de las cookies
-const getCsrfToken = () => {
-  // Intentar obtener de las cookies usando js-cookie
-  if (typeof document !== "undefined") {
-    // Buscar en document.cookie directamente
-    const cookies = document.cookie.split(";");
-    for (let cookie of cookies) {
-      const [name, value] = cookie.trim().split("=");
-      if (name === "csrftoken") {
-        return value;
-      }
-    }
+// Cache para el token CSRF para evitar múltiples peticiones
+let csrfTokenCache = null;
+let csrfTokenPromise = null;
+
+// Función para obtener el token CSRF del endpoint del backend
+const getCsrfTokenFromEndpoint = async () => {
+  // Si ya tenemos un token en cache, devolverlo
+  if (csrfTokenCache) {
+    return csrfTokenCache;
   }
-  return null;
+
+  // Si ya hay una petición en curso, esperar a que termine
+  if (csrfTokenPromise) {
+    return csrfTokenPromise;
+  }
+
+  // Crear nueva petición para obtener el token
+  csrfTokenPromise = fetch(`${API_BASE_URL}/csrf-token/`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to get CSRF token: ${response.status}`);
+      }
+      const data = await response.json();
+      const token = data.csrfToken;
+      csrfTokenCache = token;
+      csrfTokenPromise = null;
+      return token;
+    })
+    .catch((error) => {
+      csrfTokenPromise = null;
+      console.error("Error obteniendo CSRF token:", error);
+      throw error;
+    });
+
+  return csrfTokenPromise;
+};
+
+// Función para invalidar el cache del CSRF token
+// Útil cuando se recibe un error 403 o cuando el token puede haber expirado
+export const invalidateCsrfTokenCache = () => {
+  csrfTokenCache = null;
+  csrfTokenPromise = null;
 };
 
 // Configuración de fetch con credenciales para sesiones
-export const fetchWithCredentials = (url, options = {}) => {
+export const fetchWithCredentials = async (url, options = {}) => {
   // Determinar si es una petición que requiere CSRF (POST, PUT, DELETE, PATCH)
   const method = options.method || "GET";
   const needsCsrf = ["POST", "PUT", "DELETE", "PATCH"].includes(
     method.toUpperCase()
   );
-
-  // Obtener el token CSRF si es necesario
-  const csrfToken = needsCsrf ? getCsrfToken() : null;
 
   // Construir headers
   const headers = {
@@ -104,16 +135,35 @@ export const fetchWithCredentials = (url, options = {}) => {
     ...options.headers,
   };
 
-  // Agregar el token CSRF al header si está disponible
-  if (csrfToken) {
-    headers["X-CSRFToken"] = csrfToken;
+  // Obtener el token CSRF si es necesario
+  if (needsCsrf) {
+    try {
+      const csrfToken = await getCsrfTokenFromEndpoint();
+      if (csrfToken) {
+        headers["X-CSRFToken"] = csrfToken;
+      }
+    } catch (error) {
+      console.error("Error obteniendo CSRF token para la petición:", error);
+      // Invalidar el cache para que el siguiente intento obtenga un nuevo token
+      invalidateCsrfTokenCache();
+      // Continuar sin el token, el backend rechazará si es necesario
+    }
   }
 
-  return fetch(url, {
+  const response = await fetch(url, {
     ...options,
     credentials: "include", // CRUCIAL para sesiones y cookies
     headers,
   });
+
+  // Si recibimos un 403, puede ser que el token CSRF haya expirado
+  // Invalidar el cache para que el siguiente intento obtenga un nuevo token
+  if (response.status === 403 && needsCsrf) {
+    console.warn("Recibido 403, invalidando cache del CSRF token");
+    invalidateCsrfTokenCache();
+  }
+
+  return response;
 };
 
 // Función helper para manejar errores
@@ -146,6 +196,9 @@ export const API_ENDPOINTS = {
   // Carrito
   cart: () => `${API_BASE_URL}/cart/`,
   cartItem: (id) => `${API_BASE_URL}/cart/${id}/`,
+
+  // CSRF Token
+  csrfToken: () => `${API_BASE_URL}/csrf-token/`,
 
   // Colecciones
   collections: () => `${API_BASE_URL}/collections/`,
