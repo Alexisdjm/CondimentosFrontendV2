@@ -24,6 +24,12 @@ const Item = () => {
     isUnidad,
   } = useQuantity(product?.measurement ?? "kg");
 
+  // Determinar si el producto es solo gramos (measurement === "g")
+  const isGramsOnly = product?.measurement === "g";
+  // Determinar si se debe mostrar "g" en lugar de "kg" (cuando es "g" o cuando es "bo" y unidad es "gm")
+  const showGrams =
+    isGramsOnly || (product?.measurement === "bo" && unidad === "gm");
+
   // Usar el hook personalizado para agregar al carrito
   const { handleAddToCart, showAdded, cartLoading } = useAddToCart(
     product,
@@ -181,7 +187,7 @@ const Item = () => {
                     aria-label={`Cantidad: ${displayValue} ${
                       isUnidad
                         ? "unidades"
-                        : unidad === "gm"
+                        : showGrams
                         ? "gramos"
                         : "kilogramos"
                     }`}
@@ -215,7 +221,7 @@ const Item = () => {
                     aria-label={`Total: ${
                       isUnidad
                         ? `${displayValue} unidades`
-                        : unidad === "gm"
+                        : showGrams
                         ? `${displayValue} gramos`
                         : unidad === "kg"
                         ? `${displayValue} kilogramos`
@@ -224,7 +230,7 @@ const Item = () => {
                   >
                     {isUnidad
                       ? `${displayValue} unidades`
-                      : unidad === "gm"
+                      : showGrams
                       ? `${displayValue}g`
                       : unidad === "kg"
                       ? `${displayValue}kg`
